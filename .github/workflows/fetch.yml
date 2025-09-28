@@ -1,0 +1,43 @@
+name: Fetch Liverpool fixtures
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 4 * * *"   # daily at 04:00 UTC – adjust as you like
+  push:
+    paths:
+      - ".github/workflows/fetch.yml"
+      - "scripts/fetch_fixtures.py"
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run fetcher
+        env:
+          X_APISPORTS_KEY: ${{ secrets.X_APISPORTS_KEY }}
+          DATE_FROM: "2025-09-01"
+          DATE_TO:   "2026-04-15"
+        run: python scripts/fetch_fixtures.py
+
+      - name: Commit updated JSON
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/fixtures.json
+            git commit -m "chore: update fixtures.json"
+            git push
+          else
+            echo "No changes to commit"
+          fi
