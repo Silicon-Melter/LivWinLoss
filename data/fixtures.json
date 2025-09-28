@@ -1,7 +1,22 @@
 {
-  "team_id": 40,
-  "from": "2025-09-01",
-  "to": "2026-04-15",
-  "generated_at": "2025-09-28T09:45:57Z",
-  "response": []
+  "from": "2025-09-27",
+  "to": "2025-09-28",
+  "generated_at": "2025-09-28T12:34:45+00:00",
+  "summary": {
+    "wins": 0,
+    "draws": 0,
+    "losses": 1
+  },
+  "rows": [
+    {
+      "date": "2025-09-27",
+      "home": "Crystal Palace",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "2 - 1",
+      "status": "FT",
+      "result": "L"
+    }
+  ],
+  "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
 }
