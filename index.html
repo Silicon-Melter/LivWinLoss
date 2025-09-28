@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Liverpool W/L Counter (Oct 2025 → Mar 2026)</title>
+  <title>Liverpool W/L Counter (Sep 27, 2025 → Today)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root { font-family: system-ui, Arial, sans-serif; }
-    .card { max-width: 640px; margin: 3rem auto; padding: 1.5rem; border: 1px solid #ddd; border-radius: 12px; }
+    .card { max-width: 720px; margin: 3rem auto; padding: 1.5rem; border: 1px solid #ddd; border-radius: 12px; }
     h1 { margin: 0 0 0.5rem; font-size: 1.5rem; }
     .muted { color: #666; margin-bottom: 1rem; }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem; }
     .pill { padding: 0.75rem; border-radius: 10px; border: 1px solid #eee; text-align: center; }
     .big { font-size: 1.75rem; font-weight: 700; }
     .foot { margin-top: 1rem; color:#666; font-size: .9rem;}
+    table { width:100%; border-collapse: collapse; margin-top:1rem; }
+    th, td { padding: .5rem; border-bottom: 1px solid #eee; text-align:left; }
+    th { background:#fafafa; }
+    .w { color: #0a7; font-weight: 700; }
+    .d { color: #a70; font-weight: 700; }
+    .l { color: #c00; font-weight: 700; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>🔴 Liverpool W/L Counter</h1>
-    <div class="muted">Window: <strong>2025-10-01</strong> → <strong>2026-03-31</strong> (all competitions)</div>
+    <div class="muted" id="window">Window: 2025-09-27 → <span id="today">today</span></div>
 
     <div class="stats">
       <div class="pill">
@@ -36,60 +42,61 @@
     </div>
 
     <div class="foot" id="meta">Loading…</div>
+
+    <table id="tbl" style="display:none">
+      <thead>
+        <tr><th>Date</th><th>Competition</th><th>Match</th><th>Score</th><th>R</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <script>
-    // Fixed date window (UTC dates in API JSON)
-    const FROM = new Date("2025-10-01T00:00:00Z");
-    const TO   = new Date("2026-03-31T23:59:59Z");
+    const FROM = "2025-09-27";
 
-    // Count only finished fixtures (FT/AET/PEN/AWD)
-    const FINISHED = new Set(["FT","AET","PEN","AWD"]);
+    function formatDateISO(d) {
+      const pad = n => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
 
     async function main() {
+      // show today's date in the header
+      const today = new Date();
+      document.getElementById("today").textContent = formatDateISO(today);
+
       try {
         const res = await fetch("./data/fixtures.json", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to load fixtures.json");
         const data = await res.json();
 
-        // data.response is an array of fixtures from the fetch script
-        const rows = (data.response || []).filter(fx => {
-          const iso = fx.fixture?.date;
-          const st  = fx.fixture?.status?.short;
-          if (!iso || !FINISHED.has(st)) return false;
-          const dt = new Date(iso);
-          return dt >= FROM && dt <= TO;
-        });
-
-        // Liverpool side detection (we store team_id in json meta)
-        const teamId = data.team_id;
-        let w = 0, d = 0, l = 0;
-
-        rows.forEach(fx => {
-          const home = fx.teams?.home;
-          const away = fx.teams?.away;
-          const goals = fx.goals || {};
-          const lfcHome = home?.id === teamId;
-          const gf = lfcHome ? goals.home : goals.away;
-          const ga = lfcHome ? goals.away : goals.home;
-
-          if (gf > ga) w++;
-          else if (gf < ga) l++;
-          else d++;
-        });
-
-        document.getElementById("wins").textContent   = w;
-        document.getElementById("draws").textContent  = d;
-        document.getElementById("losses").textContent = l;
+        const { summary, rows, from, to, generated_at, source_url } = data;
+        document.getElementById("wins").textContent   = summary.wins;
+        document.getElementById("draws").textContent  = summary.draws;
+        document.getElementById("losses").textContent = summary.losses;
 
         document.getElementById("meta").textContent =
-          `Counted ${rows.length} finished fixtures from ${data.from} to ${data.to}. Last updated: ${data.generated_at}`;
+          `Counted ${rows.length} finished matches from ${from} to ${to}. Last updated: ${generated_at}`;
+
+        // fill table
+        const tbody = document.querySelector("#tbl tbody");
+        rows.forEach(r => {
+          const tr = document.createElement("tr");
+          const tdDate = document.createElement("td"); tdDate.textContent = r.date;
+          const tdComp = document.createElement("td"); tdComp.textContent = r.competition || "—";
+          const tdMatch= document.createElement("td"); tdMatch.textContent = `${r.home} vs ${r.away}`;
+          const tdScore= document.createElement("td"); tdScore.textContent = r.score_text || "—";
+          const tdRes  = document.createElement("td");
+          tdRes.textContent = r.result;
+          tdRes.className = r.result ? r.result.toLowerCase()[0] : "";
+          tr.append(tdDate, tdComp, tdMatch, tdScore, tdRes);
+          tbody.appendChild(tr);
+        });
+        document.getElementById("tbl").style.display = "table";
       } catch (e) {
-        document.getElementById("meta").textContent = "Error loading data. Check fixtures.json.";
+        document.getElementById("meta").textContent = "Error loading data. Has the Action run yet?";
         console.error(e);
       }
     }
-
     main();
   </script>
 </body>
