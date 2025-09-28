@@ -1,249 +1,160 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Liverpool W/D/L — Sep 27, 2025 → Today</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+#!/usr/bin/env python3
+import re, sys, json
+from datetime import date, datetime, timezone
+from typing import List, Dict, Tuple, Optional
 
-  <!-- Chart.js (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+import requests
+from bs4 import BeautifulSoup
+from dateutil import parser as dtparse
 
-  <style>
-    :root { font-family: system-ui, Arial, sans-serif; color-scheme: light dark; }
-    .wrap { max-width: 900px; margin: 2.5rem auto; padding: 1rem; }
-    h1 { margin: 0 0 .25rem; font-size: 1.6rem; }
-    .muted { color: #666; margin-bottom: 1rem; }
-    .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
-    @media (min-width: 860px) { .grid { grid-template-columns: 2fr 1fr; } }
+TEAM_ID = 364  # Liverpool (ESPN)
+START_DATE = date(2025, 9, 27)  # fixed start
+TODAY_UTC = datetime.now(timezone.utc).date()  # dynamic end
 
-    .card { border: 1px solid #e6e6e6; border-radius: 12px; padding: 1rem; background: #fff; }
-    .controls label { display:block; font-size:.9rem; margin:.25rem 0 .4rem; }
-    .controls input[type="file"] { width:100%; }
-    .row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
-    .stat { display:flex; align-items:baseline; gap:.35rem; }
-    .stat b { font-size:1.4rem; }
-    .legend { display:flex; gap:1rem; margin-top:.5rem; font-size:.92rem; }
-    .swatch { display:inline-block; width:.9rem; height:.9rem; border-radius:3px; margin-right:.35rem; vertical-align:middle; }
-    .foot { margin-top:.75rem; color:#666; font-size:.9rem; }
-    button { border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:.5rem .75rem; cursor:pointer; }
-    button:hover { background:#f0f0f0; }
-    .full-width { width:100%; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>🔴 Liverpool W/D/L</h1>
-    <div class="muted" id="window">Window: <b>2025-09-27</b> → <b id="today">today</b></div>
+CANDIDATE_URLS = [
+    f"https://www.espn.com/soccer/team/results/_/id/{TEAM_ID}/eng.liverpool",
+    f"https://www.espn.com/soccer/team/results/_/id/{TEAM_ID}/liverpool",
+    f"https://www.espn.com/soccer/team/results/_/id/{TEAM_ID}/season/{START_DATE.year}",
+    f"https://www.espn.com/soccer/team/results/_/id/{TEAM_ID}",
+]
 
-    <div class="grid">
-      <!-- Chart card -->
-      <div class="card">
-        <canvas id="wdlChart" height="180"></canvas>
+HEADERS = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                   "AppleWebKit/537.36 (KHTML, like Gecko) "
+                   "Chrome/124.0.0.0 Safari/537.36"),
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.espn.com/soccer/",
+}
 
-        <div class="legend">
-          <span><span class="swatch" style="background:#0ea5a6"></span>Wins</span>
-          <span><span class="swatch" style="background:#f59e0b"></span>Draws</span>
-          <span><span class="swatch" style="background:#ef4444"></span>Losses</span>
-        </div>
+SCORE_RE = re.compile(r"(\d+)\s*[-–]\s*(\d+)", re.I)
 
-        <div class="row" style="margin-top:.75rem">
-          <div class="stat">Wins: <b id="wins">–</b></div>
-          <div class="stat">Draws: <b id="draws">–</b></div>
-          <div class="stat">Losses: <b id="losses">–</b></div>
-          <div class="stat">Matches: <b id="matches">–</b></div>
-          <div class="stat">Win%: <b id="winpct">–</b></div>
-          <button id="refresh">Refresh data</button>
-        </div>
+def fetch_html(url: str) -> str:
+    r = requests.get(url, headers=HEADERS, timeout=30)
+    r.raise_for_status()
+    return r.text
 
-        <div class="foot" id="meta">Loading…</div>
-      </div>
+def parse_row_generic(tr: BeautifulSoup) -> Optional[Dict]:
+    tds = tr.find_all("td")
+    if not tds:
+        return None
 
-      <!-- Controls card -->
-      <div class="card controls">
-        <label><b>Apply a photo to the chart</b></label>
-        <input id="imgInput" type="file" accept="image/*" />
-        <label style="margin-top:.5rem">Where to apply:</label>
-        <select id="applyWhere" class="full-width">
-          <option value="all">All bars</option>
-          <option value="wins">Wins only</option>
-          <option value="draws">Draws only</option>
-          <option value="losses">Losses only</option>
-          <option value="bg">Background watermark</option>
-        </select>
-        <div class="foot">Tip: pick a small image for nicer tiling in bar fills. PNGs with transparency look great.</div>
-      </div>
-    </div>
-  </div>
+    # Date (first cell)
+    raw_date = tds[0].get_text(" ", strip=True)
+    try:
+        d = dtparse.parse(raw_date, fuzzy=True).date()
+    except Exception:
+        return None  # header-ish row
 
-  <script>
-    // ---- Settings
-    const FROM = "2025-09-27";                 // fixed start date
-    const DATA_URL = "./data/fixtures.json";   // written daily by your GitHub Action
+    # Home/Away via team links (first=home, last=away)
+    team_links = tr.select('a[href*="/team/"]')
+    names = [a.get_text(strip=True) for a in team_links if a.get_text(strip=True)]
+    if len(names) < 2:
+        return None
+    home_team, away_team = names[0], names[-1]
 
-    // ---- Utilities
-    const pad = n => String(n).padStart(2, "0");
-    const todayISO = () => {
-      const d = new Date();
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    };
-    document.getElementById("today").textContent = todayISO();
+    # Score anywhere in row
+    row_text = tr.get_text(" ", strip=True)
+    m = SCORE_RE.search(row_text)
+    if m:
+        hg, ag = int(m.group(1)), int(m.group(2))
+    else:
+        # no score => future/invalid row
+        return None
 
-    // ---- Base colors for bars (used when no image)
-    const baseColors = {
-      wins:   "#0ea5a6", // teal
-      draws:  "#f59e0b", // amber
-      losses: "#ef4444"  // red
-    };
+    up = row_text.upper()
+    if   "FT"  in up: status = "FT"
+    elif "PEN" in up: status = "PEN"
+    elif "AET" in up: status = "AET"
+    else:             status = "FT"
 
-    // ---- Background plugin (optional image watermark)
-    const bgPlugin = {
-      id: "bgImage",
-      img: null,
-      beforeDraw(chart, args, opts) {
-        if (!this.img) return;
-        const { ctx, chartArea } = chart;
-        if (!chartArea) return;
-        const { left, top, width, height } = chartArea;
-        ctx.save();
-        ctx.globalAlpha = 0.12;
-        // tile image
-        const pattern = ctx.createPattern(this.img, "repeat");
-        ctx.fillStyle = pattern;
-        ctx.fillRect(left, top, width, height);
-        ctx.restore();
-      }
-    };
+    comp_text = tds[-1].get_text(" ", strip=True)
 
-    let chart; // Chart.js instance
+    # W/D/L relative to Liverpool
+    home_is_lfc = home_team.lower().startswith("liverpool")
+    away_is_lfc = away_team.lower().startswith("liverpool")
+    if not (home_is_lfc or away_is_lfc):
+        return None  # shouldn't happen on the team page
 
-    // ---- Create the chart
-    function createChart(w, d, l) {
-      const ctx = document.getElementById("wdlChart").getContext("2d");
-      const data = {
-        labels: ["Wins", "Draws", "Losses"],
-        datasets: [{
-          label: "Results",
-          data: [w, d, l],
-          borderColor: "#111827",
-          borderWidth: 1,
-          backgroundColor: [baseColors.wins, baseColors.draws, baseColors.losses],
-          hoverBackgroundColor: [baseColors.wins, baseColors.draws, baseColors.losses]
-        }]
-      };
-      const options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true, ticks: { precision:0 } }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => `${ctx.raw} ${ctx.label.toLowerCase()}` } }
-        }
-      };
-      chart = new Chart(ctx, { type: "bar", data, options, plugins: [bgPlugin] });
+    gf, ga = (hg, ag) if home_is_lfc else (ag, hg)
+    if gf > ga: res = "W"
+    elif gf < ga: res = "L"
+    else:        res = "D"  # regulation draw; treat pens separately if you prefer
+
+    return {
+        "date": d,
+        "home": home_team,
+        "away": away_team,
+        "competition": comp_text,
+        "score_text": f"{hg} - {ag}",
+        "status": status,
+        "result": res
     }
 
-    // ---- Apply image either to bars or to background
-    function applyImageToChart(img, where) {
-      if (!chart) return;
-      const ctx = chart.ctx;
-      const pat = ctx.createPattern(img, "repeat");
+def scrape_results() -> Tuple[List[Dict], Dict]:
+    last_diag = {}
+    for url in CANDIDATE_URLS:
+        html = fetch_html(url)
+        soup = BeautifulSoup(html, "lxml")
+        collected = []
+        diag = {"url": url, "tables_checked": 0, "rows_parsed": 0}
 
-      if (where === "bg") {
-        bgPlugin.img = img;
-        chart.update();
-        return;
-      }
+        for tbl in soup.select("table.Table, table[role='table']"):
+            diag["tables_checked"] += 1
+            tbody = tbl.find("tbody")
+            if not tbody:
+                continue
+            for tr in tbody.find_all("tr"):
+                row = parse_row_generic(tr)
+                if row:
+                    collected.append(row)
 
-      // Start with base colors
-      const fill = [baseColors.wins, baseColors.draws, baseColors.losses];
+        if collected:
+            diag["rows_parsed"] = len(collected)
+            return collected, diag
+        last_diag = diag
+    raise RuntimeError(f"No usable rows from ESPN. Last diagnostics: {last_diag}")
 
-      if (where === "all") {
-        fill[0] = fill[1] = fill[2] = pat;
-      } else if (where === "wins") {
-        fill[0] = pat;
-      } else if (where === "draws") {
-        fill[1] = pat;
-      } else if (where === "losses") {
-        fill[2] = pat;
-      }
+def main():
+    try:
+        rows, diag = scrape_results()
+    except Exception as e:
+        print(f"Scrape failed: {e}", file=sys.stderr)
+        sys.exit(1)
 
-      chart.data.datasets[0].backgroundColor = fill;
-      chart.data.datasets[0].hoverBackgroundColor = fill;
-      chart.update();
+    # Filter START_DATE → TODAY_UTC
+    window = [r for r in rows if isinstance(r.get("date"), date)
+              and START_DATE <= r["date"] <= TODAY_UTC]
+
+    # Sort by date
+    window.sort(key=lambda r: r["date"])
+
+    # Tally finished
+    w = sum(1 for r in window if r["result"] == "W")
+    d = sum(1 for r in window if r["result"] == "D")
+    l = sum(1 for r in window if r["result"] == "L")
+
+    out = {
+        "from": START_DATE.isoformat(),
+        "to": TODAY_UTC.isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "summary": {"wins": w, "draws": d, "losses": l},
+        "rows": [
+            {
+                **r,
+                "date": r["date"].isoformat(),
+            } for r in window
+        ],
+        "source_url": diag.get("url"),
     }
 
-    // ---- Load JSON and render
-    async function loadAndRender() {
-      document.getElementById("meta").textContent = "Loading…";
-      try {
-        const res = await fetch(DATA_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("fixtures.json not found (has the Action run?)");
-        const data = await res.json();
+    # Write JSON for the website
+    import os, pathlib
+    pathlib.Path("data").mkdir(parents=True, exist_ok=True)
+    with open("data/fixtures.json", "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
 
-        // Derive counts (use summary if present, else compute)
-        let w, d, l;
-        if (data.summary) {
-          w = data.summary.wins ?? 0;
-          d = data.summary.draws ?? 0;
-          l = data.summary.losses ?? 0;
-        } else if (Array.isArray(data.rows)) {
-          w = data.rows.filter(r => r.result === "W").length;
-          d = data.rows.filter(r => r.result === "D").length;
-          l = data.rows.filter(r => r.result === "L").length;
-        } else {
-          w = d = l = 0;
-        }
+    print(f"Wrote data/fixtures.json with {len(window)} rows | W:{w} D:{d} L:{l} | Source: {diag.get('url')}")
 
-        // Update header + stats
-        document.getElementById("wins").textContent = w;
-        document.getElementById("draws").textContent = d;
-        document.getElementById("losses").textContent = l;
-
-        const matches = w + d + l;
-        document.getElementById("matches").textContent = matches;
-        document.getElementById("winpct").textContent = matches ? ((w / matches) * 100).toFixed(1) + "%" : "—";
-
-        const from = data.from || FROM;
-        const to = data.to   || todayISO();
-        const gen = data.generated_at || "—";
-        document.getElementById("window").innerHTML = `Window: <b>${from}</b> → <b>${to}</b>`;
-        document.getElementById("meta").textContent = `Updated ${gen}. Source: ESPN results.`;
-
-        // Build chart
-        if (chart) chart.destroy();
-        createChart(w, d, l);
-
-      } catch (err) {
-        document.getElementById("meta").textContent = "Error loading fixtures.json";
-        console.error(err);
-      }
-    }
-
-    // ---- Wire up controls
-    document.getElementById("refresh").addEventListener("click", loadAndRender);
-
-    const imgInput = document.getElementById("imgInput");
-    const whereSel = document.getElementById("applyWhere");
-    let lastImg = null;
-
-    function handleImage(file) {
-      if (!file) return;
-      const img = new Image();
-      img.onload = () => {
-        lastImg = img;
-        applyImageToChart(img, whereSel.value);
-      };
-      img.src = URL.createObjectURL(file);
-    }
-    imgInput.addEventListener("change", e => handleImage(e.target.files?.[0]));
-    whereSel.addEventListener("change", () => {
-      if (lastImg) applyImageToChart(lastImg, whereSel.value);
-    });
-
-    // Kick things off
-    loadAndRender();
-  </script>
-</body>
-</html>
+if __name__ == "__main__":
+    import sys
+    main()
