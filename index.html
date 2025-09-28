@@ -9,68 +9,31 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 
   <style>
+    /* --- Dark theme (forced) --- */
     :root {
-      color-scheme: light dark;
-      --bg: #ffffff;
-      --fg: #111827;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --card: #ffffff;
-      --teal: #0ea5a6;   /* wins */
-      --amber:#f59e0b;   /* draws */
-      --red:  #ef4444;   /* losses */
-      --shadow: 0 8px 24px rgba(0,0,0,.06);
+      --bg: #0b0c0f;
+      --card: #101218;
+      --fg: #e5e7eb;
+      --muted: #9aa0a6;
+      --border: #22252d;
+      --shadow: 0 10px 32px rgba(0,0,0,.45);
       --radius: 14px;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0b0b0c;
-        --fg: #f8fafc;
-        --muted: #9ca3af;
-        --border: #26272b;
-        --card: #121316;
-        --shadow: 0 8px 24px rgba(0,0,0,.35);
-      }
-    }
-
-    html, body { height: 100%; }
+    html, body { height: 100%; background: var(--bg); color: var(--fg); }
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: clamp(12px, 3.5vw, 24px); }
+    header { margin: 0 0 12px; }
+    h1 { margin: 0; font-size: clamp(20px, 4.5vw, 28px); line-height: 1.2; }
+    .muted { color: var(--muted); }
+    .tag { display:inline-block; padding:2px 8px; border:1px solid var(--border); border-radius:999px; font-size:12px; color: var(--muted); }
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: clamp(12px, 3vw, 24px);
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: var(--bg);
-      padding: clamp(8px, 2vw, 12px) 0;
-    }
-    h1 {
-      margin: 0;
-      font-size: clamp(20px, 4.5vw, 28px);
-      line-height: 1.2;
-    }
-    .muted { color: var(--muted); font-size: clamp(12px, 2.8vw, 14px); }
-
-    .grid {
-      display: grid;
-      gap: clamp(12px, 2.8vw, 18px);
-      grid-template-columns: 1fr;
-    }
-    @media (min-width: 880px) {
-      .grid { grid-template-columns: 2fr 1fr; }
-    }
+    .grid { display: grid; gap: clamp(12px, 2.6vw, 18px); grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 2fr 1fr; } }
 
     .card {
       background: var(--card);
@@ -80,154 +43,107 @@
       padding: clamp(12px, 3vw, 18px);
     }
 
-    /* Chart area keeps a pleasant aspect ratio on mobile */
-    .chart-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 10; /* adapt height based on width */
-      min-height: 240px;
-      max-height: 520px;
-    }
+    /* Chart area with fluid height for mobile */
+    .chart-wrap { position: relative; width: 100%; aspect-ratio: 16 / 10; min-height: 240px; max-height: 560px; }
     canvas { width: 100% !important; height: 100% !important; }
 
-    .legend {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      font-size: clamp(12px, 2.8vw, 14px);
-    }
-    .swatch {
-      width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 6px;
-    }
+    .stats { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top: 8px; font-size: 14px; }
+    .stat b { font-size: 18px; }
 
-    .stats {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-top: 10px;
-      font-size: clamp(13px, 3.2vw, 15px);
+    table { width:100%; border-collapse: collapse; margin-top: 10px; }
+    thead th {
+      text-align:left; font-weight:600; font-size: 13px; color: var(--muted);
+      border-bottom: 1px solid var(--border); padding: 8px 10px;
     }
-    .stat b { font-size: clamp(16px, 4.8vw, 20px); }
+    tbody td {
+      border-bottom: 1px solid var(--border); padding: 10px; font-size: 14px;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .r { text-align:center; font-weight:700; }
+    .w { color: #10b981; } /* win */
+    .d { color: #9ca3af; } /* draw grey (matches bar) */
+    .l { color: #ef4444; } /* loss */
 
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    @media (min-width: 520px) {
-      .toolbar { grid-template-columns: 1fr 1fr; }
-    }
-    label { font-size: clamp(12px, 2.8vw, 14px); color: var(--muted); display: block; margin: 6px 0; }
-    select, input[type="file"], button {
-      width: 100%;
-      font-size: clamp(14px, 3.8vw, 16px);
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--fg);
-    }
-    button {
-      background: linear-gradient(0deg, rgba(0,0,0,0.04), rgba(255,255,255,0.04));
-      cursor: pointer;
-    }
-    button:active { transform: translateY(1px); }
-
-    .foot { margin-top: 8px; color: var(--muted); font-size: clamp(12px, 2.8vw, 14px); }
+    .foot { margin-top: 8px; color: var(--muted); font-size: 13px; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>🔴 Liverpool W/D/L</h1>
+      <h1>🔴 Liverpool W/D/L <span class="tag">All competitions</span></h1>
       <div class="muted" id="window">Window: <b>2025-09-27</b> → <b id="today">today</b></div>
     </header>
 
     <div class="grid">
-      <!-- Chart card -->
+      <!-- Chart + stats -->
       <section class="card" aria-label="WDL chart">
         <div class="chart-wrap">
           <canvas id="wdlChart" aria-label="Wins, Draws, Losses bar chart" role="img"></canvas>
         </div>
 
-        <div class="legend" aria-hidden="true">
-          <span><span class="swatch" style="background:#0ea5a6"></span>Wins</span>
-          <span><span class="swatch" style="background:#f59e0b"></span>Draws</span>
-          <span><span class="swatch" style="background:#ef4444"></span>Losses</span>
-        </div>
-
-        <div class="stats" id="stats">
+        <div class="stats">
           <div class="stat">Wins: <b id="wins">–</b></div>
           <div class="stat">Draws: <b id="draws">–</b></div>
           <div class="stat">Losses: <b id="losses">–</b></div>
           <div class="stat">Matches: <b id="matches">–</b></div>
           <div class="stat">Win%: <b id="winpct">–</b></div>
-          <button id="refresh" style="min-width: 140px;">Refresh data</button>
         </div>
 
         <div class="foot" id="meta">Loading…</div>
       </section>
 
-      <!-- Controls card -->
-      <aside class="card" aria-label="Chart image controls">
-        <div class="toolbar">
-          <div>
-            <label for="imgInput"><b>Choose a photo</b></label>
-            <input id="imgInput" type="file" accept="image/*" />
-          </div>
-          <div>
-            <label for="applyWhere">Apply to</label>
-            <select id="applyWhere">
-              <option value="all">All bars</option>
-              <option value="wins">Wins only</option>
-              <option value="draws">Draws only</option>
-              <option value="losses">Losses only</option>
-              <option value="bg">Background watermark</option>
-            </select>
-          </div>
-        </div>
-        <div class="foot">Images are tiled inside bars for a crisp look. PNGs with transparency work nicely.</div>
+      <!-- Match history -->
+      <aside class="card" aria-label="Match history">
+        <h3 style="margin:0 0 8px; font-size:16px;">Match history</h3>
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th style="width:96px">Date</th>
+              <th>Competition</th>
+              <th>Match</th>
+              <th style="width:72px">Score</th>
+              <th style="width:48px">R</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </aside>
     </div>
   </div>
 
   <script>
-    // ---------- Basics
-    const FROM = "2025-09-27";                // fixed start date
-    const DATA_URL = "./data/fixtures.json";  // produced daily by your GitHub Action
+    // ----- Config
+    const FROM = "2025-09-27";                 // fixed start
+    const DATA_URL = "./data/fixtures.json";   // written daily by your workflow
 
+    // ----- Helpers
     const pad = n => String(n).padStart(2, "0");
-    const todayISO = () => {
-      const d = new Date();
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    };
+    const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
     document.getElementById("today").textContent = todayISO();
 
-    // ---------- Chart setup
-    const baseColors = { wins:"#0ea5a6", draws:"#f59e0b", losses:"#ef4444" };
-    const bgPlugin = {
-      id: "bgImage",
-      img: null,
-      beforeDraw(chart) {
-        if (!this.img) return;
-        const { ctx, chartArea } = chart;
-        if (!chartArea) return;
-        const { left, top, width, height } = chartArea;
-        ctx.save();
-        ctx.globalAlpha = 0.12;
-        ctx.fillStyle = ctx.createPattern(this.img, "repeat");
-        ctx.fillRect(left, top, width, height);
-        ctx.restore();
-      }
-    };
+    let chart; // global Chart.js instance
 
-    let chart;
+    async function loadImage(src) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src + (src.includes("?") ? "" : `?v=${Date.now()}`); // cache-bust
+      });
+    }
 
-    function createChart(w, d, l) {
+    async function createChart(w, d, l) {
       const ctx = document.getElementById("wdlChart").getContext("2d");
-      // Ensure good label spacing on narrow screens
+
+      // separate images per bar
+      const winImg  = await loadImage("./assets/wins.png");
+      const lossImg = await loadImage("./assets/losses.png");
+
+      const winFill  = winImg  ? ctx.createPattern(winImg,  "repeat") : "#2dd4bf";
+      const drawFill = "#9ca3af"; // solid grey for draws
+      const lossFill = lossImg ? ctx.createPattern(lossImg, "repeat") : "#ef4444";
+
+      if (chart) chart.destroy();
       chart = new Chart(ctx, {
         type: "bar",
         data: {
@@ -235,128 +151,78 @@
           datasets: [{
             label: "Results",
             data: [w, d, l],
-            borderColor: "rgba(0,0,0,.25)",
+            borderColor: "rgba(255,255,255,.18)",
             borderWidth: 1,
-            backgroundColor: [baseColors.wins, baseColors.draws, baseColors.losses],
-            hoverBackgroundColor: [baseColors.wins, baseColors.draws, baseColors.losses],
-            maxBarThickness: 80
+            backgroundColor: [winFill, drawFill, lossFill],
+            hoverBackgroundColor: [winFill, drawFill, lossFill],
+            maxBarThickness: 76
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          layout: { padding: { top: 8, right: 8, bottom: 8, left: 8 } },
+          layout: { padding: { top: 6, right: 6, bottom: 6, left: 6 } },
           scales: {
-            x: {
-              ticks: { font: { size: 12 } }
-            },
-            y: {
-              beginAtZero: true,
-              ticks: { precision: 0, font: { size: 12 } },
-              grid: { color: "rgba(125,125,125,.15)" }
-            }
+            x: { ticks: { color: "#cbd5e1", font: { size: 12 } }, grid: { display: false } },
+            y: { beginAtZero: true, ticks: { color: "#cbd5e1", precision: 0, font: { size: 12 } }, grid: { color: "rgba(255,255,255,.06)" } }
           },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: { label: ctx => `${ctx.raw} ${ctx.label.toLowerCase()}` },
-              displayColors: false
-            }
-          },
-          animation: { duration: 300 }
-        },
-        plugins: [bgPlugin]
+          plugins: { legend: { display: false } },
+          animation: { duration: 250 }
+        }
       });
     }
 
-    // ---------- Apply image to bars / background
-    function applyImageToChart(img, where) {
-      if (!chart) return;
-      const ctx = chart.ctx;
-      const pattern = ctx.createPattern(img, "repeat");
-      if (where === "bg") {
-        bgPlugin.img = img;
-        chart.update();
-        return;
-      }
-      const fill = [baseColors.wins, baseColors.draws, baseColors.losses];
-      if (where === "all") {
-        fill[0] = fill[1] = fill[2] = pattern;
-      } else if (where === "wins") {
-        fill[0] = pattern;
-      } else if (where === "draws") {
-        fill[1] = pattern;
-      } else if (where === "losses") {
-        fill[2] = pattern;
-      }
-      chart.data.datasets[0].backgroundColor = fill;
-      chart.data.datasets[0].hoverBackgroundColor = fill;
-      chart.update();
-    }
-
-    // ---------- Data loading + rendering
     async function loadAndRender() {
-      const metaEl = document.getElementById("meta");
-      metaEl.textContent = "Loading…";
+      const meta = document.getElementById("meta");
+      meta.textContent = "Loading…";
       try {
         const res = await fetch(DATA_URL, { cache: "no-store" });
         if (!res.ok) throw new Error("fixtures.json not found (has the Action run?)");
         const data = await res.json();
 
-        // Get counts
-        let w, d, l;
-        if (data.summary) {
-          w = data.summary.wins ?? 0;
-          d = data.summary.draws ?? 0;
-          l = data.summary.losses ?? 0;
-        } else {
-          const rows = Array.isArray(data.rows) ? data.rows : [];
-          w = rows.filter(r => r.result === "W").length;
-          d = rows.filter(r => r.result === "D").length;
-          l = rows.filter(r => r.result === "L").length;
-        }
+        const rows = Array.isArray(data.rows) ? data.rows : [];
+        const w = data.summary ? (data.summary.wins ?? 0) : rows.filter(r => r.result === "W").length;
+        const d = data.summary ? (data.summary.draws ?? 0) : rows.filter(r => r.result === "D").length;
+        const l = data.summary ? (data.summary.losses ?? 0) : rows.filter(r => r.result === "L").length;
 
-        // Stats UI
-        const matches = w + d + l;
-        const pct = matches ? ((w / matches) * 100).toFixed(1) + "%" : "—";
+        // stats
         document.getElementById("wins").textContent = w;
         document.getElementById("draws").textContent = d;
         document.getElementById("losses").textContent = l;
+        const matches = w + d + l;
         document.getElementById("matches").textContent = matches;
-        document.getElementById("winpct").textContent = pct;
+        document.getElementById("winpct").textContent = matches ? ((w / matches) * 100).toFixed(1) + "%" : "—";
 
+        // window/meta
         const from = data.from || FROM;
         const to   = data.to   || todayISO();
         const gen  = data.generated_at || "—";
         document.getElementById("window").innerHTML = `Window: <b>${from}</b> → <b>${to}</b>`;
-        metaEl.textContent = `Updated ${gen}. Source: ESPN results.`;
+        meta.textContent = `Updated ${gen}. Source: ESPN results.`;
 
-        // Build chart
-        if (chart) chart.destroy();
-        createChart(w, d, l);
+        // table
+        const tbody = document.querySelector("#tbl tbody");
+        tbody.innerHTML = "";
+        rows.forEach(r => {
+          const tr = document.createElement("tr");
+          const tdDate = document.createElement("td"); tdDate.textContent = r.date || ""; tdDate.style.whiteSpace = "nowrap";
+          const tdComp = document.createElement("td"); tdComp.textContent = r.competition || "—";
+          const tdMatch= document.createElement("td"); tdMatch.textContent = `${r.home} vs ${r.away}`;
+          const tdScore= document.createElement("td"); tdScore.textContent = r.score_text || "—"; tdScore.style.textAlign = "center";
+          const tdRes  = document.createElement("td"); tdRes.textContent = r.result || ""; tdRes.className = "r " + (r.result ? r.result.toLowerCase() : "");
+          tr.append(tdDate, tdComp, tdMatch, tdScore, tdRes);
+          tbody.appendChild(tr);
+        });
 
-      } catch (err) {
-        metaEl.textContent = "Error loading fixtures.json";
-        console.error(err);
+        // chart
+        await createChart(w, d, l);
+
+      } catch (e) {
+        meta.textContent = "Error loading fixtures.json";
+        console.error(e);
       }
     }
 
-    // ---------- Controls
-    document.getElementById("refresh").addEventListener("click", loadAndRender);
-    const imgInput = document.getElementById("imgInput");
-    const whereSel = document.getElementById("applyWhere");
-    let lastImg = null;
-
-    function handleImage(file) {
-      if (!file) return;
-      const img = new Image();
-      img.onload = () => { lastImg = img; applyImageToChart(img, whereSel.value); };
-      img.src = URL.createObjectURL(file);
-    }
-    imgInput.addEventListener("change", e => handleImage(e.target.files?.[0]));
-    whereSel.addEventListener("change", () => { if (lastImg) applyImageToChart(lastImg, whereSel.value); });
-
-    // ---------- Init
     loadAndRender();
   </script>
 </body>
