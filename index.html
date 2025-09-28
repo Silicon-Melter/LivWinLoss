@@ -173,29 +173,47 @@
     }
 
     async function loadAndRender() {
-      const meta = document.getElementById("meta");
-      meta.textContent = "Loading…";
-      try {
-        const res = await fetch(DATA_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("fixtures.json not found (has the Action run?)");
-        const data = await res.json();
+        const meta = document.getElementById("meta");
+        meta.textContent = "Loading…";
+
+        // ✅ cache-bust GitHub Pages CDN
+        const url = `${DATA_URL}${DATA_URL.includes("?") ? "&" : "?"}v=${Date.now()}`;
+
+        try {
+        const res = await fetch(url, { cache: "no-store" });
+
+        if (!res.ok) {
+            // Show HTTP status to help debug (403/404/500 etc.)
+            meta.textContent = `Error loading fixtures.json (HTTP ${res.status})`;
+            console.error("fetch error", res.status, res.statusText, await res.text());
+            return;
+        }
+
+        let data;
+        try {
+            data = await res.json();
+        } catch (parseErr) {
+            meta.textContent = "Error parsing fixtures.json (invalid JSON)";
+            console.error("parse error", parseErr);
+            return;
+        }
 
         const rows = Array.isArray(data.rows) ? data.rows : [];
-        const w = data.summary ? (data.summary.wins ?? 0) : rows.filter(r => r.result === "W").length;
+        const w = data.summary ? (data.summary.wins ?? 0)  : rows.filter(r => r.result === "W").length;
         const d = data.summary ? (data.summary.draws ?? 0) : rows.filter(r => r.result === "D").length;
-        const l = data.summary ? (data.summary.losses ?? 0) : rows.filter(r => r.result === "L").length;
+        const l = data.summary ? (data.summary.losses ?? 0): rows.filter(r => r.result === "L").length;
 
         // stats
-        document.getElementById("Taro Packs").textContent = w;
+        document.getElementById("wins").textContent = w;
         document.getElementById("draws").textContent = d;
-        document.getElementById("Sci Center").textContent = l;
+        document.getElementById("losses").textContent = l;
         const matches = w + d + l;
         document.getElementById("matches").textContent = matches;
         document.getElementById("winpct").textContent = matches ? ((w / matches) * 100).toFixed(1) + "%" : "—";
 
         // window/meta
         const from = data.from || FROM;
-        const to   = data.to   || todayISO();
+        const to   = data.to   || (new Date()).toISOString().slice(0,10);
         const gen  = data.generated_at || "—";
         document.getElementById("window").innerHTML = `Window: <b>${from}</b> → <b>${to}</b>`;
         meta.textContent = `Updated ${gen}. Source: ESPN results.`;
@@ -204,23 +222,23 @@
         const tbody = document.querySelector("#tbl tbody");
         tbody.innerHTML = "";
         rows.forEach(r => {
-          const tr = document.createElement("tr");
-          const tdDate = document.createElement("td"); tdDate.textContent = r.date || ""; tdDate.style.whiteSpace = "nowrap";
-          const tdComp = document.createElement("td"); tdComp.textContent = r.competition || "—";
-          const tdMatch= document.createElement("td"); tdMatch.textContent = `${r.home} vs ${r.away}`;
-          const tdScore= document.createElement("td"); tdScore.textContent = r.score_text || "—"; tdScore.style.textAlign = "center";
-          const tdRes  = document.createElement("td"); tdRes.textContent = r.result || ""; tdRes.className = "r " + (r.result ? r.result.toLowerCase() : "");
-          tr.append(tdDate, tdComp, tdMatch, tdScore, tdRes);
-          tbody.appendChild(tr);
+            const tr = document.createElement("tr");
+            const tdDate = document.createElement("td"); tdDate.textContent = r.date || ""; tdDate.style.whiteSpace = "nowrap";
+            const tdComp = document.createElement("td"); tdComp.textContent = r.competition || "—";
+            const tdMatch= document.createElement("td"); tdMatch.textContent = `${r.home} vs ${r.away}`;
+            const tdScore= document.createElement("td"); tdScore.textContent = r.score_text || "—"; tdScore.style.textAlign = "center";
+            const tdRes  = document.createElement("td"); tdRes.textContent = r.result || ""; tdRes.className = "r " + (r.result ? r.result.toLowerCase() : "");
+            tr.append(tdDate, tdComp, tdMatch, tdScore, tdRes);
+            tbody.appendChild(tr);
         });
 
         // chart
         await createChart(w, d, l);
 
-      } catch (e) {
-        meta.textContent = "Error loading fixtures.json";
+        } catch (e) {
+        meta.textContent = "Error loading fixtures.json (network)";
         console.error(e);
-      }
+    }
     }
 
     loadAndRender();
