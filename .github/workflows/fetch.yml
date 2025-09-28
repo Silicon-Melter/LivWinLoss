@@ -22,6 +22,7 @@ jobs:
       - name: Run fetcher
         env:
           X_APISPORTS_KEY: ${{ secrets.X_APISPORTS_KEY }}
+          TEAM_ID: "40" 
           DATE_FROM: "2025-09-01"
           DATE_TO:   "2026-04-15"
         run: python scripts/fetch_fixtures.py
