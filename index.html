@@ -70,8 +70,8 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>🔴 Liverpool W/D/L <span class="tag">All competitions</span></h1>
-      <div class="muted" id="window">Window: <b>2025-09-27</b> → <b id="today">today</b></div>
+      <h1>🔴 Liverpool Gambling Les go<span class="tag">All competitions</span></h1>
+      <div class="muted" id="window">Date: <b>2025-09-27</b> → <b id="today">today</b></div>
     </header>
 
     <div class="grid">
@@ -82,9 +82,9 @@
         </div>
 
         <div class="stats">
-          <div class="stat">Wins: <b id="wins">–</b></div>
+          <div class="stat">Taro Packs: <b id="wins">–</b></div>
           <div class="stat">Draws: <b id="draws">–</b></div>
-          <div class="stat">Losses: <b id="losses">–</b></div>
+          <div class="stat">Sci Center: <b id="losses">–</b></div>
           <div class="stat">Matches: <b id="matches">–</b></div>
           <div class="stat">Win%: <b id="winpct">–</b></div>
         </div>
@@ -147,7 +147,7 @@
       chart = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: ["Wins", "Draws", "Losses"],
+          labels: ["Taro Packs", "Draws", "Sci Center"],
           datasets: [{
             label: "Results",
             data: [w, d, l],
@@ -186,9 +186,9 @@
         const l = data.summary ? (data.summary.losses ?? 0) : rows.filter(r => r.result === "L").length;
 
         // stats
-        document.getElementById("wins").textContent = w;
+        document.getElementById("Taro Packs").textContent = w;
         document.getElementById("draws").textContent = d;
-        document.getElementById("losses").textContent = l;
+        document.getElementById("Sci Center").textContent = l;
         const matches = w + d + l;
         document.getElementById("matches").textContent = matches;
         document.getElementById("winpct").textContent = matches ? ((w / matches) * 100).toFixed(1) + "%" : "—";
