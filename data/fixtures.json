@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-09-30",
-  "generated_at": "2025-09-30T04:18:28+00:00",
+  "to": "2025-10-01",
+  "generated_at": "2025-10-01T04:17:51+00:00",
   "summary": {
     "wins": 0,
     "draws": 0,
-    "losses": 1
+    "losses": 2
   },
   "rows": [
     {
@@ -14,6 +14,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "2 - 1",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2025-09-30",
+      "home": "Galatasaray",
+      "away": "Liverpool",
+      "competition": "UEFA Champions League",
+      "score_text": "1 - 0",
       "status": "FT",
       "result": "L"
     }
