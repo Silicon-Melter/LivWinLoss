@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-10-04",
-  "generated_at": "2025-10-04T04:16:47+00:00",
+  "to": "2025-10-05",
+  "generated_at": "2025-10-05T04:17:04+00:00",
   "summary": {
     "wins": 0,
     "draws": 0,
-    "losses": 2
+    "losses": 3
   },
   "rows": [
     {
@@ -23,6 +23,15 @@
       "away": "Liverpool",
       "competition": "UEFA Champions League",
       "score_text": "1 - 0",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2025-10-04",
+      "home": "Chelsea",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "2 - 1",
       "status": "FT",
       "result": "L"
     }
