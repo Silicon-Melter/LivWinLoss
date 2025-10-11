@@ -7,9 +7,11 @@ import requests
 from bs4 import BeautifulSoup
 from dateutil import parser as dtparse
 
+from zoneinfo import ZoneInfo
+
 TEAM_ID = 364  # Liverpool (ESPN)
 START_DATE = date(2025, 9, 27)  # fixed start
-TODAY_UTC = datetime.now(timezone.utc).date()  # dynamic end
+TODAY_UTC = datetime.now(ZoneInfo("Asia/Bangkok")).date()
 
 CANDIDATE_URLS = [
     f"https://www.espn.com/soccer/team/results/_/id/{TEAM_ID}/eng.liverpool",

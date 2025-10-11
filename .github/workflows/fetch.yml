@@ -5,8 +5,11 @@ permissions:
 
 on:
   schedule:
-    - cron: "0 4 * * *"    # daily at 04:00 UTC
-  workflow_dispatch: {}     # optional manual run
+    - cron: "0 21 * * *"   # 04:00 Asia/Bangkok
+  workflow_dispatch: {}
+
+env:
+  TZ: Asia/Bangkok
 
 jobs:
   fetch:
