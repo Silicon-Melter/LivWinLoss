@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-10-19",
-  "generated_at": "2025-10-18T21:17:17+00:00",
+  "to": "2025-10-20",
+  "generated_at": "2025-10-19T21:17:37+00:00",
   "summary": {
     "wins": 0,
     "draws": 0,
-    "losses": 3
+    "losses": 4
   },
   "rows": [
     {
@@ -32,6 +32,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "2 - 1",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2025-10-19",
+      "home": "Liverpool",
+      "away": "Manchester United",
+      "competition": "English Premier League",
+      "score_text": "1 - 2",
       "status": "FT",
       "result": "L"
     }
