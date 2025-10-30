@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-10-30",
-  "generated_at": "2025-10-29T21:19:46+00:00",
+  "to": "2025-10-31",
+  "generated_at": "2025-10-30T21:19:07+00:00",
   "summary": {
     "wins": 1,
     "draws": 0,
-    "losses": 5
+    "losses": 6
   },
   "rows": [
     {
@@ -59,6 +59,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "3 - 2",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2025-10-29",
+      "home": "Liverpool",
+      "away": "Crystal Palace",
+      "competition": "English Carabao Cup",
+      "score_text": "0 - 3",
       "status": "FT",
       "result": "L"
     }
