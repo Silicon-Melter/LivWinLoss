@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2025-11-02",
-  "generated_at": "2025-11-01T21:17:09+00:00",
+  "to": "2025-11-03",
+  "generated_at": "2025-11-02T21:17:25+00:00",
   "summary": {
-    "wins": 1,
+    "wins": 2,
     "draws": 0,
     "losses": 6
   },
@@ -70,6 +70,15 @@
       "score_text": "0 - 3",
       "status": "FT",
       "result": "L"
+    },
+    {
+      "date": "2025-11-01",
+      "home": "Liverpool",
+      "away": "Aston Villa",
+      "competition": "English Premier League",
+      "score_text": "2 - 0",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
