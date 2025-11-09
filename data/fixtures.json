@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-11-09",
-  "generated_at": "2025-11-08T21:17:13+00:00",
+  "to": "2025-11-10",
+  "generated_at": "2025-11-09T21:17:40+00:00",
   "summary": {
     "wins": 3,
     "draws": 0,
-    "losses": 6
+    "losses": 7
   },
   "rows": [
     {
@@ -88,6 +88,15 @@
       "score_text": "1 - 0",
       "status": "FT",
       "result": "W"
+    },
+    {
+      "date": "2025-11-09",
+      "home": "Manchester City",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "3 - 0",
+      "status": "FT",
+      "result": "L"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
