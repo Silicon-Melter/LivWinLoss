@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2025-11-22",
-  "generated_at": "2025-11-21T21:19:25+00:00",
+  "to": "2025-11-23",
+  "generated_at": "2025-11-22T21:18:48+00:00",
   "summary": {
     "wins": 3,
     "draws": 0,
-    "losses": 7
+    "losses": 8
   },
   "rows": [
     {
@@ -95,6 +95,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "3 - 0",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2025-11-22",
+      "home": "Liverpool",
+      "away": "Nottingham Forest",
+      "competition": "English Premier League",
+      "score_text": "0 - 3",
       "status": "FT",
       "result": "L"
     }
