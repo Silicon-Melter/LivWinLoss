@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2025-11-30",
-  "generated_at": "2025-11-29T21:19:03+00:00",
+  "to": "2025-12-01",
+  "generated_at": "2025-11-30T21:19:07+00:00",
   "summary": {
-    "wins": 3,
+    "wins": 4,
     "draws": 0,
     "losses": 9
   },
@@ -115,6 +115,15 @@
       "score_text": "1 - 4",
       "status": "FT",
       "result": "L"
+    },
+    {
+      "date": "2025-11-30",
+      "home": "West Ham United",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "0 - 2",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
