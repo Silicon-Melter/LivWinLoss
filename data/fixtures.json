@@ -1,10 +1,10 @@
 {
   "from": "2025-09-27",
-  "to": "2025-12-04",
-  "generated_at": "2025-12-03T21:20:21+00:00",
+  "to": "2025-12-05",
+  "generated_at": "2025-12-04T21:21:53+00:00",
   "summary": {
     "wins": 4,
-    "draws": 0,
+    "draws": 1,
     "losses": 9
   },
   "rows": [
@@ -124,6 +124,15 @@
       "score_text": "0 - 2",
       "status": "FT",
       "result": "W"
+    },
+    {
+      "date": "2025-12-03",
+      "home": "Liverpool",
+      "away": "Sunderland",
+      "competition": "English Premier League",
+      "score_text": "1 - 1",
+      "status": "FT",
+      "result": "D"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
