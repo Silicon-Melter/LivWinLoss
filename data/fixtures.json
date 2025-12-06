@@ -1,10 +1,10 @@
 {
   "from": "2025-09-27",
-  "to": "2025-12-06",
-  "generated_at": "2025-12-05T21:20:37+00:00",
+  "to": "2025-12-07",
+  "generated_at": "2025-12-06T21:18:57+00:00",
   "summary": {
     "wins": 4,
-    "draws": 1,
+    "draws": 2,
     "losses": 9
   },
   "rows": [
@@ -131,6 +131,15 @@
       "away": "Sunderland",
       "competition": "English Premier League",
       "score_text": "1 - 1",
+      "status": "FT",
+      "result": "D"
+    },
+    {
+      "date": "2025-12-06",
+      "home": "Leeds United",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "3 - 3",
       "status": "FT",
       "result": "D"
     }
