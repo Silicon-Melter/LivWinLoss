@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2025-12-10",
-  "generated_at": "2025-12-09T21:20:10+00:00",
+  "to": "2025-12-11",
+  "generated_at": "2025-12-10T21:25:16+00:00",
   "summary": {
-    "wins": 4,
+    "wins": 5,
     "draws": 2,
     "losses": 9
   },
@@ -142,6 +142,15 @@
       "score_text": "3 - 3",
       "status": "FT",
       "result": "D"
+    },
+    {
+      "date": "2025-12-09",
+      "home": "Internazionale",
+      "away": "Liverpool",
+      "competition": "UEFA Champions League",
+      "score_text": "0 - 1",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
