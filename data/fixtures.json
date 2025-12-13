@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2025-12-13",
-  "generated_at": "2025-12-12T21:20:37+00:00",
+  "to": "2025-12-14",
+  "generated_at": "2025-12-13T21:19:05+00:00",
   "summary": {
-    "wins": 5,
+    "wins": 6,
     "draws": 2,
     "losses": 9
   },
@@ -149,6 +149,15 @@
       "away": "Liverpool",
       "competition": "UEFA Champions League",
       "score_text": "0 - 1",
+      "status": "FT",
+      "result": "W"
+    },
+    {
+      "date": "2025-12-13",
+      "home": "Liverpool",
+      "away": "Brighton & Hove Albion",
+      "competition": "English Premier League",
+      "score_text": "2 - 0",
       "status": "FT",
       "result": "W"
     }
