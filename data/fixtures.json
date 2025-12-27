@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2025-12-27",
-  "generated_at": "2025-12-26T21:20:31+00:00",
+  "to": "2025-12-28",
+  "generated_at": "2025-12-27T21:19:42+00:00",
   "summary": {
-    "wins": 7,
+    "wins": 8,
     "draws": 2,
     "losses": 9
   },
@@ -167,6 +167,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "1 - 2",
+      "status": "FT",
+      "result": "W"
+    },
+    {
+      "date": "2025-12-27",
+      "home": "Liverpool",
+      "away": "Wolverhampton Wanderers",
+      "competition": "English Premier League",
+      "score_text": "2 - 1",
       "status": "FT",
       "result": "W"
     }
