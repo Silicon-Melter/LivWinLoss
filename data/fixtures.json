@@ -1,12 +1,22 @@
 {
   "from": "2025-09-27",
-  "to": "2026-01-01",
-  "generated_at": "2025-12-31T21:20:52+00:00",
+  "to": "2026-01-02",
+  "generated_at": "2026-01-01T21:21:33+00:00",
   "summary": {
     "wins": 0,
-    "draws": 0,
+    "draws": 1,
     "losses": 0
   },
-  "rows": [],
+  "rows": [
+    {
+      "date": "2026-01-01",
+      "home": "Liverpool",
+      "away": "Leeds United",
+      "competition": "English Premier League",
+      "score_text": "0 - 0",
+      "status": "FT",
+      "result": "D"
+    }
+  ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
 }
