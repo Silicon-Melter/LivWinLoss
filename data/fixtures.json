@@ -1,10 +1,10 @@
 {
   "from": "2025-09-27",
-  "to": "2026-01-17",
-  "generated_at": "2026-01-16T21:23:47+00:00",
+  "to": "2026-01-18",
+  "generated_at": "2026-01-17T21:20:14+00:00",
   "summary": {
     "wins": 1,
-    "draws": 3,
+    "draws": 4,
     "losses": 0
   },
   "rows": [
@@ -43,6 +43,15 @@
       "score_text": "4 - 1",
       "status": "FT",
       "result": "W"
+    },
+    {
+      "date": "2026-01-17",
+      "home": "Liverpool",
+      "away": "Burnley",
+      "competition": "English Premier League",
+      "score_text": "1 - 1",
+      "status": "FT",
+      "result": "D"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
