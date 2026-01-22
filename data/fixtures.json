@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-01-22",
-  "generated_at": "2026-01-21T21:30:50+00:00",
+  "to": "2026-01-23",
+  "generated_at": "2026-01-22T21:26:50+00:00",
   "summary": {
-    "wins": 1,
+    "wins": 2,
     "draws": 4,
     "losses": 0
   },
@@ -52,6 +52,15 @@
       "score_text": "1 - 1",
       "status": "FT",
       "result": "D"
+    },
+    {
+      "date": "2026-01-21",
+      "home": "Marseille",
+      "away": "Liverpool",
+      "competition": "UEFA Champions League",
+      "score_text": "0 - 3",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
