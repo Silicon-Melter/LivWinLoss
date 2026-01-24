@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2026-01-24",
-  "generated_at": "2026-01-23T21:24:37+00:00",
+  "to": "2026-01-25",
+  "generated_at": "2026-01-24T21:20:18+00:00",
   "summary": {
     "wins": 2,
     "draws": 4,
-    "losses": 0
+    "losses": 1
   },
   "rows": [
     {
@@ -61,6 +61,15 @@
       "score_text": "0 - 3",
       "status": "FT",
       "result": "W"
+    },
+    {
+      "date": "2026-01-24",
+      "home": "AFC Bournemouth",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "3 - 2",
+      "status": "FT",
+      "result": "L"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
