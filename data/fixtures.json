@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-02-01",
-  "generated_at": "2026-01-31T21:25:03+00:00",
+  "to": "2026-02-02",
+  "generated_at": "2026-02-01T21:27:03+00:00",
   "summary": {
-    "wins": 3,
+    "wins": 4,
     "draws": 4,
     "losses": 1
   },
@@ -77,6 +77,15 @@
       "away": "FK Qarabag",
       "competition": "UEFA Champions League",
       "score_text": "6 - 0",
+      "status": "FT",
+      "result": "W"
+    },
+    {
+      "date": "2026-01-31",
+      "home": "Liverpool",
+      "away": "Newcastle United",
+      "competition": "English Premier League",
+      "score_text": "4 - 1",
       "status": "FT",
       "result": "W"
     }
