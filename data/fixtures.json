@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2026-02-08",
-  "generated_at": "2026-02-07T21:29:40+00:00",
+  "to": "2026-02-09",
+  "generated_at": "2026-02-08T21:30:02+00:00",
   "summary": {
     "wins": 4,
     "draws": 4,
-    "losses": 1
+    "losses": 2
   },
   "rows": [
     {
@@ -88,6 +88,15 @@
       "score_text": "4 - 1",
       "status": "FT",
       "result": "W"
+    },
+    {
+      "date": "2026-02-08",
+      "home": "Liverpool",
+      "away": "Manchester City",
+      "competition": "English Premier League",
+      "score_text": "1 - 2",
+      "status": "FT",
+      "result": "L"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
