@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-02-12",
-  "generated_at": "2026-02-11T21:35:15+00:00",
+  "to": "2026-02-13",
+  "generated_at": "2026-02-12T21:36:34+00:00",
   "summary": {
-    "wins": 4,
+    "wins": 5,
     "draws": 4,
     "losses": 2
   },
@@ -97,6 +97,15 @@
       "score_text": "1 - 2",
       "status": "FT",
       "result": "L"
+    },
+    {
+      "date": "2026-02-11",
+      "home": "Sunderland",
+      "away": "Liverpool",
+      "competition": "English Premier League",
+      "score_text": "0 - 1",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
