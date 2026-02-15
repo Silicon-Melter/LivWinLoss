@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-02-15",
-  "generated_at": "2026-02-14T21:27:33+00:00",
+  "to": "2026-02-16",
+  "generated_at": "2026-02-15T21:28:00+00:00",
   "summary": {
-    "wins": 5,
+    "wins": 6,
     "draws": 4,
     "losses": 2
   },
@@ -104,6 +104,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "0 - 1",
+      "status": "FT",
+      "result": "W"
+    },
+    {
+      "date": "2026-02-14",
+      "home": "Liverpool",
+      "away": "Brighton & Hove Albion",
+      "competition": "English FA Cup",
+      "score_text": "3 - 0",
       "status": "FT",
       "result": "W"
     }
