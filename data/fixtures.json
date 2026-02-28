@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-02-28",
-  "generated_at": "2026-02-27T21:32:01+00:00",
+  "to": "2026-03-01",
+  "generated_at": "2026-02-28T21:24:07+00:00",
   "summary": {
-    "wins": 7,
+    "wins": 8,
     "draws": 4,
     "losses": 2
   },
@@ -122,6 +122,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "0 - 1",
+      "status": "FT",
+      "result": "W"
+    },
+    {
+      "date": "2026-02-28",
+      "home": "Liverpool",
+      "away": "West Ham United",
+      "competition": "English Premier League",
+      "score_text": "5 - 2",
       "status": "FT",
       "result": "W"
     }
