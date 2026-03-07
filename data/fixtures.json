@@ -1,9 +1,9 @@
 {
   "from": "2025-09-27",
-  "to": "2026-03-07",
-  "generated_at": "2026-03-06T21:32:08+00:00",
+  "to": "2026-03-08",
+  "generated_at": "2026-03-07T21:24:29+00:00",
   "summary": {
-    "wins": 8,
+    "wins": 9,
     "draws": 4,
     "losses": 3
   },
@@ -142,6 +142,15 @@
       "score_text": "2 - 1",
       "status": "FT",
       "result": "L"
+    },
+    {
+      "date": "2026-03-06",
+      "home": "Wolverhampton Wanderers",
+      "away": "Liverpool",
+      "competition": "English FA Cup",
+      "score_text": "1 - 3",
+      "status": "FT",
+      "result": "W"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
