@@ -1,10 +1,10 @@
 {
   "from": "2025-09-27",
-  "to": "2026-03-15",
-  "generated_at": "2026-03-14T21:29:23+00:00",
+  "to": "2026-03-16",
+  "generated_at": "2026-03-15T21:30:30+00:00",
   "summary": {
     "wins": 9,
-    "draws": 4,
+    "draws": 5,
     "losses": 4
   },
   "rows": [
@@ -160,6 +160,15 @@
       "score_text": "1 - 0",
       "status": "FT",
       "result": "L"
+    },
+    {
+      "date": "2026-03-15",
+      "home": "Liverpool",
+      "away": "Tottenham Hotspur",
+      "competition": "English Premier League",
+      "score_text": "1 - 1",
+      "status": "FT",
+      "result": "D"
     }
   ],
   "source_url": "https://www.espn.com/soccer/team/results/_/id/364/eng.liverpool"
