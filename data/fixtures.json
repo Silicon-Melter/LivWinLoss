@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2026-04-04",
-  "generated_at": "2026-04-03T21:37:19+00:00",
+  "to": "2026-04-05",
+  "generated_at": "2026-04-04T21:34:09+00:00",
   "summary": {
     "wins": 10,
     "draws": 5,
-    "losses": 5
+    "losses": 6
   },
   "rows": [
     {
@@ -185,6 +185,15 @@
       "away": "Liverpool",
       "competition": "English Premier League",
       "score_text": "2 - 1",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2026-04-04",
+      "home": "Manchester City",
+      "away": "Liverpool",
+      "competition": "English FA Cup",
+      "score_text": "4 - 0",
       "status": "FT",
       "result": "L"
     }
