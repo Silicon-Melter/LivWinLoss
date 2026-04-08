@@ -1,11 +1,11 @@
 {
   "from": "2025-09-27",
-  "to": "2026-04-08",
-  "generated_at": "2026-04-07T21:43:57+00:00",
+  "to": "2026-04-09",
+  "generated_at": "2026-04-08T21:42:37+00:00",
   "summary": {
     "wins": 10,
     "draws": 5,
-    "losses": 6
+    "losses": 7
   },
   "rows": [
     {
@@ -194,6 +194,15 @@
       "away": "Liverpool",
       "competition": "English FA Cup",
       "score_text": "4 - 0",
+      "status": "FT",
+      "result": "L"
+    },
+    {
+      "date": "2026-04-08",
+      "home": "Paris Saint-Germain",
+      "away": "Liverpool",
+      "competition": "UEFA Champions League",
+      "score_text": "2 - 0",
       "status": "FT",
       "result": "L"
     }
